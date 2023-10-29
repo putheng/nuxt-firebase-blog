@@ -1,26 +1,33 @@
-import { firestore, storage, auth } from '../plugins/firebase'
-import firebase from 'firebase/app'
+import { firestore, storage, auth, storageUrl } from '../plugins/firebase'
+import firebase from 'firebase/app';
 
 export const actions = {
 
   async fetchPost({}, {uid, slug}){
-    const post = await firestore.doc(`users/${uid}/posts/${slug}`).get();
-    return post
+    const snapshot = await firestore.doc(`users/${uid}`).collection('posts').where('slug', '==', slug).get();
+
+    if(snapshot.docs.length > 0){
+      return snapshot.docs[0];
+    }
   },
   async addPost({}, data){
     const storageRef = storage.ref();
-    const postImageRef = await storageRef.child(`user-data/${data.postData.uid}/posts/${data.postData.slug}.jpg`).put(data.postImageFile);
+    const postImageRef = await storageRef.child(`user-data/${data.postData.uid}/posts/${data.postId}/${data.postData.slug}.jpg`).put(data.postImageFile);
     data.postData.postImageURL = (await postImageRef.ref.getDownloadURL());
 
-    await firestore.doc(`users/${data.postData.uid}/posts/${data.postData.slug}`).set(data.postData);
+    await firestore.doc(`users/${data.postData.uid}/posts/${data.postId}`).set(data.postData);
   },
   async deletePost({}, data){
-    const storageRef = storage.ref();
+    
+    await deleteCollection(`users/${data.ownerId}/posts/${data.postId}/comments`);
+    await firestore.doc(`users/${data.ownerId}/posts/${data.postId}`).delete();
 
-    await deleteCollection(`users/${data.ownerId}/posts/${data.slug}/comments`);
-    await firestore.doc(`users/${data.ownerId}/posts/${data.slug}`).delete();
-    await storageRef.child(`user-data/${data.ownerId}/posts/${data.slug}.jpg`).delete();
+    const storageRef = storage.ref(`user-data/${data.ownerId}/posts/${data.postId}`);
+    const files = await storageRef.listAll();
 
+    files.items.forEach(async fileRef => {
+      await storage.ref().child(fileRef.fullPath).delete();
+    });
   },
   async updatePost({}, data){
     
@@ -30,15 +37,15 @@ export const actions = {
       data.postData.postImageURL = (await newPostImageRef.ref.getDownloadURL());
     }
 
-    await firestore.doc(`users/${data.uid}/posts/${data.slug}`).update(data.postData);
+    await firestore.doc(`users/${data.uid}/posts/${data.postId}`).update(data.postData);
   },
   async dislikePost({}, postData){
-    await firestore.doc(`users/${postData.ownerId}/posts/${postData.slug}`).update({
+    await firestore.doc(`users/${postData.ownerId}/posts/${postData.postId}`).update({
       likes: firebase.firestore.FieldValue.arrayRemove(postData.uid)
     });
   },
   async likePost({}, postData){
-    await firestore.doc(`users/${postData.ownerId}/posts/${postData.slug}`).update({
+    await firestore.doc(`users/${postData.ownerId}/posts/${postData.postId}`).update({
       likes: firebase.firestore.FieldValue.arrayUnion(postData.uid)
     });
   },

@@ -122,7 +122,7 @@ service cloud.firestore {
       
       let hasValidFields = post.diff({}).addedKeys() == ['uid','title','slug','description','content','likes','tags','tagSlugs','createdAt','updatedAt','published','postImageURL'].toSet();
       let title = post.title is string && post.title.size() <= 70;
-      let slug = post.slug is string && !exists(/databases/$(database)/documents/users/$(post.uid)/posts/$(post.slug));
+      let slug = post.slug is string;// && !exists(/databases/$(database)/documents/users/$(post.uid)/posts/$(post.slug));
       let like = post.likes is list && post.likes.size() == 0;
       let validDate = post.createdAt is int && post.updatedAt == post.createdAt;
       let descr = post.description is string && post.description.size() <= 300;
@@ -137,14 +137,15 @@ service cloud.firestore {
       let post = request.resource.data;
       
       let validUser = isOwner(resource.data.uid) && isOwner(request.resource.data.uid);
-      let hasValidFields = request.resource.data.diff(resource.data).affectedKeys().hasOnly(['description','content','updatedAt','published','postImageURL']);
+      let hasValidFields = request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title','slug','description','content','likes','tags','tagSlugs', 'updatedAt','published','postImageURL']);
       let validDate = post.updatedAt is int && post.createdAt < post.updatedAt;
       let descr = post.description is string && post.description.size() <= 300;
 			let content = post.content is list && post.content.size() > 0 && post.content.size() <= 300;
       let published = post.published is bool;
       let title = post.title is string && post.title.size() <= 70;
+      let tags = post.tags is list && post.tags.size() > 0 && post.tags.size() <= 5 && post.tagSlugs is list && post.tagSlugs.size() > 0 && post.tagSlugs.size() <= 5;
       
-      return validUser && hasValidFields && validDate && descr && title && content && published;
+      return validUser && hasValidFields && validDate && descr && title && content && published && tags;
     }
     
     function canLeaveALike(){

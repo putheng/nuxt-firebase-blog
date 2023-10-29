@@ -24,3 +24,4 @@ export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 export const storage = firebase.storage();
 export const provider = new firebase.auth.GoogleAuthProvider();
+export const storageUrl = "https://firebasestorage.googleapis.com/v0/b/puthengdotcom.appspot.com/o/";

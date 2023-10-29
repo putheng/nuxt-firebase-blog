@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="w-full sm:mt-0 md:w-10/12 xl:w-2/3 mx-auto xl:px-8">
-        <h1 v-if="!editMode" class="overflow-hidden overflow-ellipsis font-semibold" style="letter-spacing: -1px;">{{post.title}}</h1>
+        <h1 v-if="!editMode" class="overflow-hidden overflow-ellipsis font-semibold" style="letter-spacing: -1px;">{{titleInput}}</h1>
         <el-input 
           v-else
           class="titleInput"
@@ -119,7 +119,12 @@
       <div class="hidden xl:block w-1/6 relative pl-8">
         <div v-if="ownPost && hasPostChanged" class="sticky top-32 space-x-0 space-y-2">
           <el-button class="w-full" type="danger" @click="resetChanges()">Reset Changes</el-button>
-          <el-button class="w-full" type="success" @click="saveChanges()">Save Changes</el-button>
+          
+          <div class="flex items-center space-x-2">
+            <Loading v-if="saveLoading" class="text-xl"/>
+            <el-button :disabled="saveLoading" class="w-full" type="success" @click="saveChanges()">Save Changes</el-button>
+          </div>
+          
         </div>
       </div>
     </div>
@@ -128,7 +133,8 @@
   
   <script>
   import { metaData, toCapitalize} from '@/helpers/meta-tags';
-  
+  import kebab from 'lodash.kebabcase'
+
   export default {
     head(){
       return {
@@ -174,10 +180,10 @@
           inputErrorMessage: 'Slug is not correct.'
         }).then(async ({ value }) => {
   
-          await this.$store.dispatch('post/deletePost', {ownerId: this.post.uid, slug: this.post.slug})
+          await this.$store.dispatch('post/deletePost', {ownerId: this.post.uid, ...this.post})
   
           this.$message.error('Post deleted successfully!');
-          this.$router.push('/'+ this.authUser.username);
+          this.$router.push(`/${this.authUser.username}`);
           
         }).catch((err) => {
           console.log(err);
@@ -234,12 +240,20 @@
               description: this.descriptionInput,
               content: this.$refs.editor.quill.getContents().ops,
               published: this.publishedP,
-              title: this.titleInput
+              title: this.titleInput,
+              slug: kebab(this.titleInput),
             }
-            await this.$store.dispatch('post/updatePost', {postData: postData, uid: this.post.uid, slug: this.post.slug, newPostImageFile: this.newPostImageFile});
-            this.hasPostChanged = false;
-            this.$message.success('Post Updated Successfully')
-            this.$router.go();
+
+            try {
+              await this.$store.dispatch('post/updatePost', {postId: this.post.postId, postData: postData, uid: this.post.uid, newPostImageFile: this.newPostImageFile});
+              this.hasPostChanged = false;
+              this.$message.success('Post Updated Successfully');
+              this.$router.push({name : 'username-postSlug', params: { postSlug: postData.slug, username: this.authUser.username }});
+
+            } catch (error) {
+              this.$message.error('Something went wrong. please try again or contact support. Putheng!');   
+            }
+
           }else {
             this.$message.error('One of the post fields is not valid.')
           }
@@ -286,7 +300,7 @@
         if(this.authUser){
           if(!this.likeLoading){
             this.likeLoading = true;
-            const postData = {ownerId: this.user.uid, slug: this.post.slug, uid: this.authUser.uid}
+            const postData = {ownerId: this.user.uid, postId: this.post.postId, uid: this.authUser.uid}
             
             if(this.hasAlreadyLiked) {
               await this.$store.dispatch('post/dislikePost', postData)
@@ -307,7 +321,7 @@
         if(this.authUser){
           if(!this.bookmarkLoading){
             this.bookmarkLoading = true;
-            const bookmarkData = { uid: this.post.uid, slug: this.post.slug, createdAt: Date.now() }
+            const bookmarkData = { uid: this.post.uid, postId: this.post.postId, createdAt: Date.now() }
             const postData = { bookmarkData: bookmarkData, uid: this.authUser.uid}
             
             if(this.hasAlreadyBookmarked){
@@ -330,12 +344,8 @@
         img.src = URL.createObjectURL(res.file);
         const _this = this;
         img.onload = function(){
-          // if(this.width > 1920 || this.height > 1080){
-          //   _this.$message.error('Post image resolution can not exceed 1920x1080')
-          // }else {
-            _this.newPostImageURL = this.src
-            _this.newPostImageFile = res.file;
-          // }
+          _this.newPostImageURL = this.src
+          _this.newPostImageFile = res.file;
         }
       },
       beforePostImageUpload(file) {
@@ -364,7 +374,7 @@
       hasAlreadyBookmarked(){
         let exists = false;
         if(this.authUser){
-          exists = this.authUser.bookmarks.filter(b => (b.uid == this.post.uid && b.slug == this.post.slug))[0]
+          exists = this.authUser.bookmarks.filter(b => (b.uid == this.post.uid && b.postId == this.post.postId))[0]
         }
         return exists;
       },
@@ -409,9 +419,9 @@
           if(post.data().published || (authUser && authUser.uid == post.data().uid)){
             const commentCount = await context.store.dispatch('comment/fetchCommentCount', { postOwnerId: user.uid, slug: post.data().slug })
             return {
-              user, post: {...post.data(), commentCount }, 
+              user, post: {...post.data(), commentCount, postId: post.id}, 
               descriptionInput: post.data().description,
-              titleInput: post.data().title 
+              titleInput: post.data().title
             }
   
           }else {

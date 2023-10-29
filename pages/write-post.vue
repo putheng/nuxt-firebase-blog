@@ -109,8 +109,8 @@
 
 
 <script>
-import kebab from 'lodash.kebabcase'
-
+import kebab from 'lodash.kebabcase';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   head(){
@@ -156,7 +156,7 @@ export default {
         this.timeout = setTimeout(() => {
 
           this.$store.dispatch('post/fetchPost',{uid: this.user.uid, slug: this.postSlug}).then(res => {
-            if(!res.exists){
+            if(!res){
               this.available = true
             }else {
               this.available = false
@@ -227,7 +227,7 @@ export default {
                   tagSlugs: this.processedTags.map((tag)=>tag.slug), // for query
                 }
 
-                await this.$store.dispatch('post/addPost', {postImageFile: this.postImageFile, postData: postData});
+                await this.$store.dispatch('post/addPost', {postImageFile: this.postImageFile, postData: postData, postId: uuidv4()});
                 this.resetFields();
                 this.$message.success('Post succesfully added, redirecting...');
                 setTimeout(() => {

@@ -34,7 +34,7 @@ export const mutations = {
     state.user.usernameChangeLimit = left;
   },
   deleteBookmark(state, data){
-    const afterDelete = state.user.bookmarks.filter(b => !(b.uid == data.uid && b.slug == data.slug));
+    const afterDelete = state.user.bookmarks.filter(b => !(b.uid == data.uid && b.postId == data.postId));
     state.user.bookmarks = afterDelete;
     Cookie.set('user_data', JSON.stringify(state.user), { secure: true })
   },
