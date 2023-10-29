@@ -5,7 +5,7 @@
 
       <div class="h-full md:w-10/12 xl:w-2/3 mx-auto flex justify-between sm:justify-legacy items-center xl:px-8">
 
-        <span class="font-semibold">LOGO</span> <!-- Logo end -->
+        <span class="font-semibold">PUTHENG</span> <!-- Logo end -->
 
         <ul class="hidden sm:flex space-x-4 flex-1 px-8">
           <li><NuxtLink to="/">Home</NuxtLink></li>

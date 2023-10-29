@@ -166,7 +166,7 @@ export default {
     },
     deleteConfirmed(){
       this.deleteAccountDialog = false
-      alert('Deleting account is not allowed. Please contact "ilyasbilgihan@gmail.com"')
+      alert('Deleting account is not allowed. Please contact "puthengemail@gmail.com"')
     },
     exportData(){
       alert('export data')
@@ -201,7 +201,7 @@ export default {
       img.src = URL.createObjectURL(res.file);
       const _this = this;
       img.onload = function(){
-        if(this.width != 460 && this.height != 460){
+        if(this.width < 460 && this.height < 460){
           _this.$message.error('Avatar picture resolution must be 460x460')
         }else {
           _this.ppURL = this.src

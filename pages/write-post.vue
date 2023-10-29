@@ -18,7 +18,6 @@
           show-icon>
         </el-alert>
         
-
         <el-form-item label="Post Title" required>
           <el-input
             type="text"
@@ -30,6 +29,7 @@
             clearable
           ></el-input>
         </el-form-item>
+        
         <div class="text-sm -mt-2 mb-2">
           <span class="font-semibold">Slug:</span> <span :class="{'text-green-500': available}" class="text-red-500">"{{postSlug}}" is {{available ? 'available.' : 'not available for you. '}} </span>
         </div>
@@ -83,7 +83,7 @@
 
         <div class="flex items-center space-x-2">
 
-          <el-button type="primary" @click="submitDialog = true">Submit Post</el-button>
+          <el-button type="primary" @click="submit">Submit Post</el-button>
           <Loading v-if="loading" class="text-xl"/>
 
         </div>
@@ -94,10 +94,10 @@
           :width="submitDialogSize"
           center
           >
-          <div style="text-align: center">You will not have a chance to change the post's title or slug.</div>
+          <div style="text-align: center">Are you sure to published this post?.</div>
           <span slot="footer" class="space-y-2 dialog-footer">
             <el-button @click="submitDialog = false">Cancel</el-button>
-            <el-button type="primary" style="margin-left:0" @click="submitPost()">I Understand</el-button>
+            <el-button type="primary" style="margin-left:0" @click="submitPost()">Published</el-button>
           </span>
         </el-dialog>
       </el-form>
@@ -133,7 +133,7 @@ export default {
       commentCount: 0,
       postImageURL: null,
       postImageFile: null,
-      tags: ["use","comma","between","tags"],
+      tags: ["use comma between tags"],
       tagLimit: 5,
       published: true,
       submitDialog: false,
@@ -188,6 +188,15 @@ export default {
         return true
       }
     },
+
+    submit(){
+      if(this.published){
+        this.submitDialog = true;
+      }else{
+        this.submitPost();
+      }
+    },
+
     async submitPost(){
       this.submitDialog = false;
       this.loading = true;
@@ -251,12 +260,12 @@ export default {
       img.src = URL.createObjectURL(res.file);
       const _this = this;
       img.onload = function(){
-        if(this.width > 1920 || this.height > 1080){
-          _this.$message.error('Post image resolution can not exceed 1920x1080')
-        }else {
+        // if(this.width > 1920 || this.height > 1080){
+        //   _this.$message.error('Post image resolution can not exceed 1920x1080')
+        // }else {
           _this.postImageURL = this.src
           _this.postImageFile = res.file;
-        }
+        // }
       }
     },
     beforePostImageUpload(file) {

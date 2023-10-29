@@ -3,7 +3,7 @@ const generateDynamicRoutes = require('./helpers/generateDynamicRoutes.js')
 module.exports = {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Nuxt Firebase Blog',
+    title: 'Putheng Blog',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -15,13 +15,13 @@ module.exports = {
       { hid: 'twitter:site', name: 'twitter:site', content: '@ilyasbilgihan'},
       { hid: 'twitter:creator', name: 'twitter:creator', content: '@ilyasbilgihan'},
       { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image'},
-      { hid: 'og:site_name', name: 'og:site_name', content: 'Nuxt Firebase Blog'},
-      { hid: 'og:title', name: 'og:title', content: 'Nuxt Firebase Blog'},
+      { hid: 'og:site_name', name: 'og:site_name', content: 'Putheng Blog'},
+      { hid: 'og:title', name: 'og:title', content: 'Putheng Blog'},
       { hid: 'og:description', name: 'og:description', content: 'A Social Blog example which uses Nuxt + Firebase.'},
       { hid: 'og:image', name: 'og:image', content: 'https://firebasestorage.googleapis.com/v0/b/nuxt-blog-exercise.appspot.com/o/external%2Fbig-logo.png?alt=media&token=bb5e45d2-0909-46cc-a25b-3e9adac0a28c'},
-      { hid: 'og:image:alt', name: 'og:image:alt', content: 'Nuxt Firebase Blog'},
+      { hid: 'og:image:alt', name: 'og:image:alt', content: 'Putheng Blog'},
       { hid: 'twitter:image', name: 'twitter:image', content: 'https://firebasestorage.googleapis.com/v0/b/nuxt-blog-exercise.appspot.com/o/external%2Fbig-logo.png?alt=media&token=bb5e45d2-0909-46cc-a25b-3e9adac0a28c'},
-      { hid: 'twitter:image:alt', name: 'twitter:image:alt', content: 'Nuxt Firebase Blog'},
+      { hid: 'twitter:image:alt', name: 'twitter:image:alt', content: 'Putheng Blog'},
       { hid: 'google-site-verification', name: 'google-site-verification', content: 'QuV9Mq96f5fN08e96TMDN9X-J8u4L2bfbma_OZdKt6E'}
     ],
     link: [

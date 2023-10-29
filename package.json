@@ -9,10 +9,12 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@botom/quill-resize-module": "^2.0.0",
     "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/sitemap": "^2.4.0",
     "cookieparser": "^0.1.0",
     "core-js": "^3.19.3",
+    "dedent": "^1.5.1",
     "diff": "^5.1.0",
     "el-input-tag": "^1.3.3",
     "element-ui": "^2.15.9",
@@ -22,6 +24,9 @@
     "js-cookie": "^3.0.1",
     "lodash.kebabcase": "^4.1.1",
     "nuxt": "^2.15.8",
+    "quill-image-extend-module": "^1.1.2",
+    "quill-image-resize": "^3.0.9",
+    "quill-image-resize-module": "^3.0.0",
     "vue": "^2.6.14",
     "vue-quill-editor": "^3.0.6",
     "vue-server-renderer": "^2.6.14",

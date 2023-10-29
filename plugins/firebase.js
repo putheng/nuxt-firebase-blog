@@ -4,15 +4,14 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
 
-
-
 const firebaseConfig = {
-  apiKey: "AIzaSyCOdZNgvpVFKBt-of0GdNdy7ZbkkRbrifQ",
-  authDomain: "nuxt-blog-exercise.firebaseapp.com",
-  projectId: "nuxt-blog-exercise",
-  storageBucket: "nuxt-blog-exercise.appspot.com",
-  messagingSenderId: "230824530134",
-  appId: "1:230824530134:web:6aaa5280d3901f058ef977"
+  apiKey: "AIzaSyAxeGmPpgW3gclBDeueWJ06uL-nFGxXC18",
+  authDomain: "puthengdotcom.firebaseapp.com",
+  projectId: "puthengdotcom",
+  storageBucket: "puthengdotcom.appspot.com",
+  messagingSenderId: "243047133152",
+  appId: "1:243047133152:web:6e80e676941ba1d80bc585",
+  measurementId: "G-HXTS12RD0M"
 };
 
 let app = null;

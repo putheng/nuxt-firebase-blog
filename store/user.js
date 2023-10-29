@@ -100,16 +100,16 @@ export const actions = {
     
     if(ppFile != null){
 
-      const ppRes = await storageRef.child(`profile-pictures/${state.user.uid}.jpg`).put(ppFile);
+      const ppRes = await storageRef.child(`user-data/${state.user.uid}/profile-pictures.jpg`).put(ppFile);
       updatedUser.photoURL = (await ppRes.ref.getDownloadURL());
 
     }else if (!updatedUser.photoURL && unchangedPP != null) {
       
-      await storageRef.child(`profile-pictures/${state.user.uid}.jpg`).delete()
+      await storageRef.child(`user-data/${state.user.uid}/profile-pictures.jpg`).delete()
 
     }
     if(coverImageFile){
-      const coverImageRes = await storageRef.child(`cover-images/${state.user.uid}.jpg`).put(coverImageFile);
+      const coverImageRes = await storageRef.child(`user-data/${state.user.uid}/cover-images.jpg`).put(coverImageFile);
       updatedUser.coverImageURL = (await coverImageRes.ref.getDownloadURL());
     }
 

@@ -142,8 +142,9 @@ service cloud.firestore {
       let descr = post.description is string && post.description.size() <= 300;
 			let content = post.content is list && post.content.size() > 0 && post.content.size() <= 300;
       let published = post.published is bool;
+      let title = post.title is string && post.title.size() <= 70;
       
-      return validUser && hasValidFields && validDate && descr && content && published;
+      return validUser && hasValidFields && validDate && descr && title && content && published;
     }
     
     function canLeaveALike(){
