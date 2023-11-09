@@ -5,10 +5,10 @@
 
       <div class="h-full md:w-10/12 xl:w-2/3 mx-auto flex justify-between sm:justify-legacy items-center xl:px-8">
 
-        <span class="font-semibold">PUTHENG</span> <!-- Logo end -->
+        <NuxtLink to="/"> <span class="font-semibold">HOME</span> </NuxtLink>
 
         <ul class="hidden sm:flex space-x-4 flex-1 px-8">
-          <li><NuxtLink to="/">Home</NuxtLink></li>
+          <!-- <li><NuxtLink to="/tag/jobs">Jobs</NuxtLink></li> -->
           <li v-if="user"><NuxtLink to="/feed">My Feed</NuxtLink></li>
         </ul>  <!-- Header menu end -->
 

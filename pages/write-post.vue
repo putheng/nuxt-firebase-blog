@@ -71,6 +71,7 @@
         <div id="write-post" class="mb-4">
           <quill-editor
             ref="editor"
+            :options="editorOption"
             v-model="content"
           />
         </div>
@@ -83,9 +84,9 @@
 
         <div class="flex items-center space-x-2">
 
-          <el-button type="primary" @click="submit">Submit Post</el-button>
           <Loading v-if="loading" class="text-xl"/>
-
+          <el-button :disabled="loading" type="primary" @click="submit">Submit Post</el-button>
+        
         </div>
 
         <el-dialog
@@ -111,6 +112,8 @@
 <script>
 import kebab from 'lodash.kebabcase';
 import { v4 as uuidv4 } from 'uuid';
+import {QuillWatch} from '../plugins/image-extend'
+import hljs from 'highlight.js/lib/common'
 
 export default {
   head(){
@@ -120,26 +123,55 @@ export default {
   },
   data() {
     return {
-      postTitle: "",
-      postSlug: null,
+      postTitle: '',
+      postSlug: '',
       postTitleLimit: 70,
-      descriptionLimit: 300,
+      descriptionLimit: 400,
       timeout: null,
       checkingSlug: false,
       available: false,
-      descriptionText: "",
+      descriptionText: '',
       loading: false,
       content: '',
       commentCount: 0,
       postImageURL: null,
       postImageFile: null,
-      tags: ["use comma between tags"],
+      tags: ['use comma between tags'],
       tagLimit: 5,
       published: true,
       submitDialog: false,
       mobileWarning: false,
-      submitDialogSize: "40%"
-
+      submitDialogSize: '40%',
+      postId: uuidv4(),
+      editorOption: {
+        theme: 'bubble',
+        placeholder: 'Select your text and see the magic.',
+        modules: {
+          syntax: { highlight: text => hljs.highlightAuto(text).value },
+          toolbar: {
+            container: [
+              [{ 'header': [2, 3, 4, 5, 6, false] }],
+              [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
+              ['bold', 'italic', 'underline', 'strike'],
+              ['blockquote', 'code'],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [{ 'script': 'sub'}, { 'script': 'super' }],
+              [{ 'indent': '-1'}, { 'indent': '+1' }],
+              ['link', 'image', /*'video',*/ 'code-block'],
+              ['clean']
+            ],
+            handlers: {
+              'image': function () {
+                QuillWatch.emit(this.quill.id)
+              }
+            }
+          },
+          ImageExtend: {
+            component: this,
+            edit: false
+          }
+        }
+      }
     }
   },
   methods: {
@@ -227,7 +259,7 @@ export default {
                   tagSlugs: this.processedTags.map((tag)=>tag.slug), // for query
                 }
 
-                await this.$store.dispatch('post/addPost', {postImageFile: this.postImageFile, postData: postData, postId: uuidv4()});
+                await this.$store.dispatch('post/addPost', {postImageFile: this.postImageFile, postData: postData, postId: this.postId});
                 this.resetFields();
                 this.$message.success('Post succesfully added, redirecting...');
                 setTimeout(() => {

@@ -35,11 +35,13 @@ Vue.use(VueQuillEditor, {
         ['clean']
       ],
       handlers: {
-        'image': function () {
+        'image': function (state) {
           QuillWatch.emit(this.quill.id)
         }
       }
     },
-    ImageExtend: {}
+    ImageExtend: {
+      vue: this
+    }
   }
 })

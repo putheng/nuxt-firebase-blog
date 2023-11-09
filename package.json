@@ -20,7 +20,7 @@
     "element-ui": "^2.15.9",
     "firebase": "^8.10.0",
     "firebase-admin": "^11.0.0",
-    "highlight.js": "^11.5.1",
+    "highlight.js": "^11.9.0",
     "js-cookie": "^3.0.1",
     "lodash.kebabcase": "^4.1.1",
     "nuxt": "^2.15.8",

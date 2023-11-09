@@ -114,7 +114,7 @@ const LIMIT = 3;
 export default {
   head(){
     return {
-      title: `${toCapitalize(this.user.displayName)}'s rofile`,
+      title: `${toCapitalize(this.user.displayName)}'s profile`,
       meta: metaData({
         title: `${toCapitalize(this.user.displayName)}'s profile`,
         description: `Public profile page of ${toCapitalize(this.user.displayName)}.`,

@@ -2,7 +2,6 @@ import { firestore, storage } from '../plugins/firebase'
 import firebase from 'firebase/app'
 import Cookie from 'js-cookie'
 
-
 export const state = () => ({
   user: null,
   backupUsername: null,

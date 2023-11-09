@@ -1,4 +1,4 @@
-import { firestore, storage, auth } from '../plugins/firebase'
+import { storage } from '../plugins/firebase'
 
 export const QuillWatch = {
     watcher: {},
@@ -103,9 +103,28 @@ export class ImageExtend {
     async uploadImg(){
         const storageRef = storage.ref();
         const self = this
+
+        const userId = self.config.component.user.uid;
+        let postId = self.config.component.postId;
+        let postSlug = self.config.component.postSlug;
+        
+        if(self.config.edit){
+            postId = self.config.component.post.postId;
+            postSlug = self.config.component.post.slug;
+        }
+
+        const min = Math.ceil(1000);
+        const max = Math.floor(9999);
+        const random = Math.floor(Math.random() * (max - min) + min)
+
+        console.log(`user-data/${userId}/posts/${postId}/${postSlug}-${random}.jpg`)
+
         try {
             QuillWatch.active.uploading()
-            const postImageRef = await storageRef.child(`user-data/1234/posts/1234.jpg`).put(self.file);
+            const postImageRef = await storageRef
+                .child(`user-data/${userId}/posts/${postId}/${postSlug}.jpg`)
+                .put(self.file);
+
             self.imgURL = (await postImageRef.ref.getDownloadURL());
 
             QuillWatch.active.uploadSuccess()

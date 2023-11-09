@@ -89,6 +89,7 @@
         <client-only>
           <div class="mt-8" v-loading="editorLoading">
             <quill-editor
+              :options="editorOption"
               :class="{'contentInput': editMode}"
               contentType="html"
               ref="editor"
@@ -132,18 +133,19 @@
   </template>
   
   <script>
-  import { metaData, toCapitalize} from '@/helpers/meta-tags';
+  import { metaData } from '@/helpers/meta-tags';
   import kebab from 'lodash.kebabcase'
+  import hljs from 'highlight.js/lib/common'
 
   export default {
     head(){
       return {
-        title: toCapitalize(this.post.title),
+        title: this.post.title,
         meta: metaData({
-          title: toCapitalize(this.post.title),
+          title: this.post.title,
           description: this.post.description,
           image: this.post.postImageURL,
-          imageAlt: toCapitalize(this.post.title),
+          imageAlt: this.post.title,
         })
       }
     },
@@ -155,8 +157,8 @@
         editMode: false,
         saveLoading: false,
         hasPostChanged: false,
-        titleLimit: 64,
-        descriptionLimit: 300,
+        titleLimit: 70,
+        descriptionLimit: 400,
         editorLoading: false,
         commentContent: '',
         commentLimit: 300,
@@ -165,6 +167,35 @@
         newPostImageFile: null,
         newPostImageURL: null,
         publishedP: null,
+        editorOption: {
+        theme: 'bubble',
+        placeholder: 'Select your text and see the magic.',
+        modules: {
+          syntax: { highlight: text => hljs.highlightAuto(text).value },
+          toolbar: {
+            container: [
+              [{ 'header': [2, 3, 4, 5, 6, false] }],
+              [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
+              ['bold', 'italic', 'underline', 'strike'],
+              ['blockquote', 'code'],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [{ 'script': 'sub'}, { 'script': 'super' }],
+              [{ 'indent': '-1'}, { 'indent': '+1' }],
+              ['link', 'image', /*'video',*/ 'code-block'],
+              ['clean']
+            ],
+            handlers: {
+              'image': function () {
+                QuillWatch.emit(this.quill.id)
+              }
+            }
+          },
+          ImageExtend: {
+            component: this,
+            edit: true
+          }
+        }
+      }
       }
     },
     methods:{
@@ -186,7 +217,6 @@
           this.$router.push(`/${this.authUser.username}`);
           
         }).catch((err) => {
-          console.log(err);
           this.$message.info('Deleting post canceled.');       
         });
       },
